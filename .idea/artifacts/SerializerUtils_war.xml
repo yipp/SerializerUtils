@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="SerializerUtils:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="SerializerUtils.war">
+      <element id="artifact" artifact-name="SerializerUtils:war exploded" />
+    </root>
+  </artifact>
+</component>
