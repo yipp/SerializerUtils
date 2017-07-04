@@ -1,7 +1,5 @@
 package org.yunet.serializer.ecxel;
 import java.io.FileInputStream;
-import java.util.*;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;  
 import org.apache.poi.ss.usermodel.Row;  
@@ -9,8 +7,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-   
+import sun.misc.resources.Messages_sv;
+
 public class ReadExcel001 {  
     public static void main(String[] args) {  
         read("E:/JavaUtils/test.xlsx");
@@ -57,7 +61,6 @@ public class ReadExcel001 {
     private static void serializerFile(List<List<String>> file){
         List<Map<String,String>> objMap = new ArrayList<Map<String, String>>();
         Map<String,String> objs = null;
-        System.out.println(file.size()+"************");
         for (int i = 1;i<file.size();i++){
             objs = new HashMap<String, String>();
             for (int j = 0;j<file.get(i).size();j++){
@@ -66,19 +69,20 @@ public class ReadExcel001 {
             objMap.add(objs);
         }
         System.out.println(objMap);
+        serializerObj(objMap);
     }
     private static void serializerObj(List<Map<String,String>> objs){
         Class clazz = null;
         Object beanObj = null;
 
        // String className = bean.getClassName();
-        String clazzName = "";
+        String clazzName = "User";
         try {
-            clazz = Class.forName(clazzName);
+            clazz = Class.forName("org.yunet.serializer.ecxel.User");
         } catch (ClassNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            throw new RuntimeException(""+clazzName);
+            throw new RuntimeException("-------找不到-------"+clazzName);
         }
 
         try {
@@ -87,7 +91,15 @@ public class ReadExcel001 {
             e.printStackTrace();
             throw new RuntimeException(""+clazzName);
         }
-        writeMethod(beanObj,"");
+        for (Map.Entry<String,String> entry: objs.get(0).entrySet()) {
+            try {
+
+                Method m = writeMethod(beanObj,entry.getKey());
+                //System.out.println(entry.g);
+                m.invoke(beanObj,entry.getValue());
+            }catch (Exception e){}
+        }
+        System.out.println((User)beanObj);
     }
     public static Method writeMethod(Object beanObj, String name) {
         //得到属性的set方法用于注入
