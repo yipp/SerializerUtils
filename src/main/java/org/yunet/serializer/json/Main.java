@@ -9,7 +9,6 @@ public class Main {
         User guestUser = new User();
         guestUser.setId(2L);
         guestUser.setName("guest");
-
         User rootUser = new User();
         rootUser.setId(3L);
         rootUser.setName("root");
