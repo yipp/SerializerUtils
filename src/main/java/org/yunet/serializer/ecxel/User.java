@@ -6,64 +6,60 @@ import java.util.Date;
 public class User  
 {  
   
-    private Integer id;  
-    private String name;  
-    private Double price;  
-    private Date date;  
-      
-  
-    public Integer getId()  
-    {  
-        return id;  
-    }  
-  
-    public void setId(Integer id)  
-    {  
-        this.id = id;  
-    }  
-  
-    public String getName()  
-    {  
-        return name;  
-    }  
-  
-    public void setName(String name)  
-    {  
-        this.name = name;  
-    }  
-  
-    public Double getPrice()  
-    {  
-        return price;  
-    }  
-  
-    public void setPrice(Double price)  
-    {  
-        this.price = price;  
-    }  
-      
-      
-  
-    public Date getDate()  
-    {  
-        return date;  
-    }  
-  
-    public void setDate(Date date)  
-    {  
-        this.date = date;  
-    }  
-  
-    public static void main(String[] args)  
-    {  
-        Class clz = User.class;  
-  
-        Field[] fa = clz.getDeclaredFields();  
-  
-        for (int i = 0; i < fa.length; i++) {  
-            System.out.println(fa[i].getName());  
-        }  
-  
-    }  
-  
-}  
+   private String name;
+   private int age;
+   private int limit;
+   private int grade;
+   private int gold;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getGrade() {
+        return grade;
+    }
+
+    public void setGrade(int grade) {
+        this.grade = grade;
+    }
+
+    public int getGold() {
+        return gold;
+    }
+
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", limit=" + limit +
+                ", grade=" + grade +
+                ", gold=" + gold +
+                '}';
+    }
+}

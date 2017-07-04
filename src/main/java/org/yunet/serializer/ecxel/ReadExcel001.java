@@ -1,100 +1,113 @@
 package org.yunet.serializer.ecxel;
-
 import java.io.FileInputStream;
-import java.io.IOException;  
-import java.io.InputStream;  
-import java.util.Iterator;  
-import org.apache.poi.hssf.usermodel.HSSFCell;  
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;  
+import java.util.*;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;  
 import org.apache.poi.ss.usermodel.Row;  
 import org.apache.poi.ss.usermodel.Sheet;  
-import org.apache.poi.ss.usermodel.Workbook;  
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;  
+import org.apache.poi.ss.usermodel.Workbook;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
    
 public class ReadExcel001 {  
     public static void main(String[] args) {  
         read("E:/JavaUtils/test.xlsx");
-        System.out.println("-------------");  
-        //readXml("d:/test2.xls");
-    }  
-    public static void readXml(String fileName){  
-        boolean isE2007 = false;    //判断是否是excel2007格式  
-        if(fileName.endsWith("xlsx"))  
-            isE2007 = true;  
-        try {  
-            InputStream input = new FileInputStream(fileName);  //建立输入流  
-            Workbook wb  = null;  
-            //根据文件格式(2003或者2007)来初始化  
-            if(isE2007)  
-                wb = new XSSFWorkbook(input);  
-            else  
-                wb = new HSSFWorkbook(input);  
-            Sheet sheet = wb.getSheetAt(0);     //获得第一个表单  
-            Iterator<Row> rows = sheet.rowIterator(); //获得第一个表单的迭代器  
-            while (rows.hasNext()) {  
-                Row row = rows.next();  //获得行数据  
-              //  System.out.println("Row #" + row.getRowNum());  //获得行号从0开始
-                Iterator<Cell> cells = row.cellIterator();    //获得第一行的迭代器  
-                while (cells.hasNext()) {  
-                    Cell cell = cells.next();  
-                  //  System.out.println("Cell #" + cell.getColumnIndex());
-                    switch (cell.getCellType()) {   //根据cell中的类型来输出数据  
-                    case HSSFCell.CELL_TYPE_NUMERIC:  
-                        System.out.print(cell.getNumericCellValue());
-                        break;  
-                    case HSSFCell.CELL_TYPE_STRING:  
-                        System.out.print(cell.getStringCellValue());
-                        break;  
-                    case HSSFCell.CELL_TYPE_BOOLEAN:
-                        System.out.print(cell.getBooleanCellValue());
-                        break;  
-                    case HSSFCell.CELL_TYPE_FORMULA:  
-                        System.out.println(cell.getCellFormula());  
-                        break;  
-                    default:  
-                        System.out.println("unsuported sell type");  
-                    break;  
-                    }  
-                }  
-            }  
-        } catch (IOException ex) {  
-            ex.printStackTrace();  
-        }  
     }
-    public  static  void  read(String fileName){
-        System.out.println("++++++++");
+    /**
+     * 解析ecxel表
+     * */
+    public static void read(String fileName){
+        List<List<String>> objs = new ArrayList<List<String>>();//用于后面转对象使用
+        Workbook book = null;
+        FileInputStream fis = null;
         try {
-            FileInputStream fis = new FileInputStream(fileName);//取到文件
-            Workbook book = new XSSFWorkbook(fis);
-            Sheet sheet = book.getSheetAt(0);//取到工作pu
+            fis = new FileInputStream(fileName);//取到文件
+            book = new XSSFWorkbook(fis);
+            fis.close();//及时关闭流
+            Sheet sheet = book.getSheetAt(0);//取到工作谱（每一页是一个工作谱）
             Iterator<Row> rows = sheet.iterator();
+            List<String> obj = null;
+            int i = 0;
             while (rows.hasNext()){
                 Row row = rows.next();
                 Iterator<Cell> cells = row.iterator();
-                System.out.println();
+                obj = new ArrayList<String>();
                 while (cells.hasNext()){
                     Cell cell = cells.next();
                     switch (cell.getCellType()) {   //根据cell中的类型来输出数据
                         case HSSFCell.CELL_TYPE_NUMERIC:
-                            System.out.print(cell.getNumericCellValue()+"\t");
-                            break;
-                        case HSSFCell.CELL_TYPE_STRING:
-                            System.out.print(cell.getStringCellValue()+"\t");
-                            break;
-                        case HSSFCell.CELL_TYPE_BOOLEAN:
-                            System.out.print(cell.getBooleanCellValue()+"\t");
-                            break;
-                        case HSSFCell.CELL_TYPE_FORMULA:
-                            System.out.print(cell.getCellFormula()+"\t");
-                            break;
-                        default:
-                            System.out.print("unsuported sell type"+"\t");
+                            cell.setCellType(Cell.CELL_TYPE_STRING);//全部转换成string类型
                             break;
                     }
+                    obj.add(cell.getStringCellValue());
                 }
-                System.out.println();
+                objs.add(obj);
             }
-        }catch (Exception e){}
+            System.out.println(objs);
+            serializerFile(objs);
+        }catch (Exception e){
+        }finally {
+            try {
+                book.close();
+            }catch (Exception e){}
+        }
+    }
+    private static void serializerFile(List<List<String>> file){
+        List<Map<String,String>> objMap = new ArrayList<Map<String, String>>();
+        Map<String,String> objs = null;
+        System.out.println(file.size()+"************");
+        for (int i = 1;i<file.size();i++){
+            objs = new HashMap<String, String>();
+            for (int j = 0;j<file.get(i).size();j++){
+                objs.put(file.get(0).get(j),file.get(i).get(j));
+            }
+            objMap.add(objs);
+        }
+        System.out.println(objMap);
+    }
+    private static void serializerObj(List<Map<String,String>> objs){
+        Class clazz = null;
+        Object beanObj = null;
+
+       // String className = bean.getClassName();
+        String clazzName = "";
+        try {
+            clazz = Class.forName(clazzName);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            throw new RuntimeException(""+clazzName);
+        }
+
+        try {
+            beanObj = clazz.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(""+clazzName);
+        }
+        writeMethod(beanObj,"");
+    }
+    public static Method writeMethod(Object beanObj, String name) {
+        //得到属性的set方法用于注入
+        Method m = null;
+        Field ff = null;
+        String methodName = "set" + name.substring(0, 1).toUpperCase()
+                + name.substring(1);
+        try {
+            //获取该类的字段
+            ff = beanObj.getClass().getDeclaredField(name);
+            ff.setAccessible(true);
+        } catch (Exception e1) {
+            throw new RuntimeException(beanObj.getClass()+"没有"+name+"这个属性");
+        }
+        try {
+            m = beanObj.getClass().getMethod(methodName,ff.getType());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException(beanObj.getClass()+"没有"+methodName+"这个方法");
+        }
+        return m;
     }
 }  
