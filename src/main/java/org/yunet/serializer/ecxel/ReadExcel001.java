@@ -15,14 +15,17 @@ import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ReadExcel001 {  
-    public static void main(String[] args) {  
+    public static void main(String[] args) {
+
+        //read("/test.xlsx");
         read("E:/JavaUtils/test.xlsx");
     }
     /**
      * 解析ecxel表
      * */
     public static void read(String fileName){
-        List<List<String>> objs = new ArrayList<List<String>>();//用于后面转对象使用
+        List<List<String>> objs;//用于后面转对象使用
+        objs = new ArrayList<List<String>>();
         Workbook book = null;
         FileInputStream fis = null;
         try {
@@ -73,9 +76,9 @@ public class ReadExcel001 {
     private static void serializerObj(List<Map<String,String>> objs){
         Class clazz = null;
         Object beanObj = null;
-        String clazzName = "User";
+        String clazzName = "org.yunet.serializer.ecxel.User";
         try {
-            clazz = Class.forName("org.yunet.serializer.ecxel.User");
+            clazz = Class.forName(clazzName);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException("-------找不到-------"+clazzName);
@@ -84,7 +87,6 @@ public class ReadExcel001 {
         try {
             beanObj = clazz.newInstance();
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(""+clazzName);
         }
         for (Map.Entry<String,String> entry: objs.get(0).entrySet()) {
@@ -94,9 +96,12 @@ public class ReadExcel001 {
                 Class<?> [] setMethod = m.getParameterTypes();
                 //判断属性类型并赋值
                 for (Class<?> c:setMethod) {
-                   if(c == int.class)
-                       value = Integer.parseInt(entry.getValue());
-                   else value = value = entry.getValue();
+                   if(c == int.class) value = Integer.parseInt(entry.getValue());
+                   else if(c == float.class) value  = Float.parseFloat(entry.getValue());
+                   else if(c == double.class) value = Double.parseDouble(entry.getValue());
+                   else if (c == long.class) value = Long.parseLong(entry.getValue());
+                   else if(c == short.class) value = Short.parseShort(entry.getValue());
+                   else value = entry.getValue();
                 }
                 m.invoke(beanObj, value);
             } catch (Exception e) {
@@ -106,8 +111,8 @@ public class ReadExcel001 {
     }
     public static Method writeMethod(Object beanObj, String name) {
         //得到属性的set方法用于注入
-        Method m = null;
-        Field ff = null;
+        Method m;
+        Field ff;
         String methodName = "set" + name.substring(0, 1).toUpperCase()
                 + name.substring(1);
         try {
@@ -120,7 +125,6 @@ public class ReadExcel001 {
         try {
             m = beanObj.getClass().getMethod(methodName,ff.getType());
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             throw new RuntimeException(beanObj.getClass()+"没有"+methodName+"这个方法");
         }
         return m;

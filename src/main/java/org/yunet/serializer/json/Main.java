@@ -1,6 +1,9 @@
 package org.yunet.serializer.json;
 import com.alibaba.fastjson.JSON;
+import org.apache.log4j.Logger;
+
 public class Main {
+    static final Logger log = Logger.getLogger(Main.class);
     public static void main(String[] args) {
         Group group = new Group();
         group.setId(0L);
@@ -18,6 +21,10 @@ public class Main {
         /**对象转json*/
         String jsonString = JSON.toJSONString(group);
 
+        log.debug("debug");
+        log.info("info");
+        log.warn("warn");
+        log.error("error");
         System.out.println(jsonString);
         /**json转对象*/
         Group group2 = JSON.parseObject(jsonString, Group.class);
