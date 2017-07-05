@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import sun.misc.resources.Messages_sv;
 
 public class ReadExcel001 {  
     public static void main(String[] args) {  
@@ -74,13 +73,10 @@ public class ReadExcel001 {
     private static void serializerObj(List<Map<String,String>> objs){
         Class clazz = null;
         Object beanObj = null;
-
-       // String className = bean.getClassName();
         String clazzName = "User";
         try {
             clazz = Class.forName("org.yunet.serializer.ecxel.User");
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw new RuntimeException("-------找不到-------"+clazzName);
         }
@@ -93,11 +89,18 @@ public class ReadExcel001 {
         }
         for (Map.Entry<String,String> entry: objs.get(0).entrySet()) {
             try {
-
-                Method m = writeMethod(beanObj,entry.getKey());
-                //System.out.println(entry.g);
-                m.invoke(beanObj,entry.getValue());
-            }catch (Exception e){}
+                Object value = null;
+                Method m = writeMethod(beanObj, entry.getKey());
+                Class<?> [] setMethod = m.getParameterTypes();
+                //判断属性类型并赋值
+                for (Class<?> c:setMethod) {
+                   if(c == int.class)
+                       value = Integer.parseInt(entry.getValue());
+                   else value = value = entry.getValue();
+                }
+                m.invoke(beanObj, value);
+            } catch (Exception e) {
+            }
         }
         System.out.println((User)beanObj);
     }
