@@ -1,7 +1,6 @@
 package org.yunet.serializer.json;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
-
 public class Main {
     static final Logger log = Logger.getLogger(Main.class);
     public static void main(String[] args) {

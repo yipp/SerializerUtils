@@ -9,8 +9,8 @@ import io.protostuff.runtime.RuntimeSchema;
 /**
  * Created by CL-PC202 on 2017/7/3.
  */
-public class Utils {
-    public Utils() {
+public class ProtostuffUtils {
+    public ProtostuffUtils() {
     }
     /**序列化*/
     public  static <T> byte[] serializer(T t){

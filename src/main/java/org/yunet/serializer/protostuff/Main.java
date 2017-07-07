@@ -12,9 +12,9 @@ public class Main {
         s.setAge(23);
         s.setSchoolName("理工");
         s.setStudentNo("12233121");
-        byte[] buf = Utils.serializer(s);
+        byte[] buf = ProtostuffUtils.serializer(s);
         System.out.println(Arrays.toString(buf));
-        SerializerTest test = Utils.deserializer(buf,SerializerTest.class);
+        SerializerTest test = ProtostuffUtils.deserializer(buf,SerializerTest.class);
         System.out.println(test.toString());
     }
 }
