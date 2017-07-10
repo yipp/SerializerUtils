@@ -12,9 +12,16 @@ public class Main {
         s.setAge(23);
         s.setSchoolName("理工");
         s.setStudentNo("12233121");
+        ddd d = new ddd();
+        d.setSerializerTest(s);
         byte[] buf = ProtostuffUtils.serializer(s);
+        byte[] buf1 = ProtostuffUtils.serializer(d);
+
         System.out.println(Arrays.toString(buf));
+        System.out.println(Arrays.toString(buf1));
         SerializerTest test = ProtostuffUtils.deserializer(buf,SerializerTest.class);
-        System.out.println(test.toString());
+        ddd test1 = ProtostuffUtils.deserializer(buf1,ddd.class);
+        System.out.println(test);
+        System.out.println(test1.getSerializerTest());
     }
 }

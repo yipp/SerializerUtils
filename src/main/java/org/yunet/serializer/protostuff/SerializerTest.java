@@ -1,18 +1,12 @@
 package org.yunet.serializer.protostuff;
 
-import io.protostuff.Tag;
-
 /**
  * Created by CL-PC202 on 2017/7/3.
  */
 public class SerializerTest {
-    @Tag(1)
     private String name;
-    @Tag(2)
     private String studentNo;
-    @Tag(3)
     private int age;
-    @Tag(4)
     private String schoolName;
 
     public String getName() {
