@@ -19,5 +19,5 @@ public class AccessDBThread implements Runnable {
         // 向数据库中添加Msg变量值
         System.out.println("Added the message: "+msg+" into the Database");
     }
- 
+    public void aa(){}
 }

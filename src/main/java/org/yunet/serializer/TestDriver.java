@@ -1,5 +1,4 @@
 package org.yunet.serializer;
-
 //TestDriver.java是一个驱动测试，sendMsg方法不间断的向ThreadPoolManager发送数据
 public class TestDriver {
  
@@ -9,7 +8,7 @@ public class TestDriver {
          
         tpm.addLogMsg( msg + "记录一条日志 " );
     }
-     
+
     public static void main(String[] args) {
         for(int i=0;i<1000;i++){
             new TestDriver().sendMsg( Integer.toString( i ) );
